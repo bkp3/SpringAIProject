@@ -1,10 +1,13 @@
 package com.springai.service;
 
 import com.springai.entity.Tut;
+
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -13,6 +16,12 @@ import java.util.Map;
 public class ChatServiceImpl implements ChatService {
 
     private ChatClient chatClient;
+
+    @Value("classpath:prompts/user-message.st")
+    private Resource userMessageTemplate;
+
+    @Value("classpath:prompts/system-message.st")
+    private Resource systemMessageTemplate;
 
     ChatServiceImpl(ChatClient.Builder chatClientBuilder) {
         this.chatClient = chatClientBuilder.build();
@@ -86,12 +95,11 @@ public class ChatServiceImpl implements ChatService {
         return this.chatClient
                 .prompt()
                 .system(
-                        system->system.text("You are a helpful coding assistant. You are an expert in coding.")
+                        system->system.text(systemMessageTemplate)
                 )
                 .user(
-                        user->user.text("What is {techName}? tell me example of {exampleName}")
-                                .param("techName","Spring")
-                                .param("exampleName","Spring Boot")
+                        user->user.text(userMessageTemplate)
+                                .param("concept","Python Framework")
                 )
                 .call()
                 .content();

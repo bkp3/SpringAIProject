@@ -28,9 +28,9 @@ public class ChatClientFluentApiController {
 
 
     @GetMapping("/chat")
-    public ResponseEntity<Tut> chat(@RequestParam(value="q", required = true) String q) {
+    public ResponseEntity<String> chat(@RequestParam(value="q", required = true) String q) {
 
-        return ResponseEntity.ok(chatService.chat(q));
+        return ResponseEntity.ok(chatService.chatTemplate(q));
     }
 
 }

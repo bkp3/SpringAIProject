@@ -63,22 +63,39 @@ public class ChatServiceImpl implements ChatService {
 //                .content();
 
 
-        //System Prompt Template
-        var systemPromptTemplate= SystemPromptTemplate.builder()
-                .template("You are a helpful coding assistant. You are an expert in coding.").build();
-        var systemMessage=systemPromptTemplate.createMessage();
-        var userPromptTemplate= PromptTemplate.builder()
-                .template("What is {techName}? tell me example of {exampleName}").build();
-        var userMessage=userPromptTemplate.createMessage(Map.of(
-                "techName","Spring",
-                "exampleName","Spring Boot"
-        ));
-        Prompt prompt1=new Prompt(systemMessage,userMessage);
-        var content=chatClient
-                .prompt(prompt1)
+//        //System Prompt Template
+//        var systemPromptTemplate= SystemPromptTemplate.builder()
+//                .template("You are a helpful coding assistant. You are an expert in coding.").build();
+//        var systemMessage=systemPromptTemplate.createMessage();
+//        var userPromptTemplate= PromptTemplate.builder()
+//                .template("What is {techName}? tell me example of {exampleName}").build();
+//        var userMessage=userPromptTemplate.createMessage(Map.of(
+//                "techName","Spring",
+//                "exampleName","Spring Boot"
+//        ));
+//        Prompt prompt1=new Prompt(systemMessage,userMessage);
+//        var content=chatClient
+//                .prompt(prompt1)
+//                .call()
+//                .content();
+//
+//        return content;
+
+        //Chat Fluent API
+
+        return this.chatClient
+                .prompt()
+                .system(
+                        system->system.text("You are a helpful coding assistant. You are an expert in coding.")
+                )
+                .user(
+                        user->user.text("What is {techName}? tell me example of {exampleName}")
+                                .param("techName","Spring")
+                                .param("exampleName","Spring Boot")
+                )
                 .call()
                 .content();
 
-        return content;
+
     }
 }

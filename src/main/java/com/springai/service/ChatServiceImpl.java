@@ -3,6 +3,7 @@ package com.springai.service;
 import com.springai.entity.Tut;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
@@ -23,8 +24,8 @@ public class ChatServiceImpl implements ChatService {
     @Value("classpath:prompts/system-message.st")
     private Resource systemMessageTemplate;
 
-    ChatServiceImpl(ChatClient.Builder chatClientBuilder) {
-        this.chatClient = chatClientBuilder.build();
+    ChatServiceImpl(ChatClient chatClient) {
+        this.chatClient =chatClient;
     }
 
 
@@ -94,12 +95,13 @@ public class ChatServiceImpl implements ChatService {
 
         return this.chatClient
                 .prompt()
+//                .advisors(new SimpleLoggerAdvisor())
                 .system(
                         system->system.text(systemMessageTemplate)
                 )
                 .user(
                         user->user.text(userMessageTemplate)
-                                .param("concept","Python Framework")
+                                .param("concept",query)
                 )
                 .call()
                 .content();
